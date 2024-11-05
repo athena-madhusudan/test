@@ -1,0 +1,64 @@
+name: Node.js CI/CD
+
+on:
+  push:
+    branches:
+      #- main
+      #- develop
+      - test-ci
+
+jobs:
+  build-and-deploy:
+    runs-on: self-hosted
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Cache node modules
+      uses: actions/cache@v2
+      with:
+        path: node_modules
+        key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.OS }}-node-
+
+    - name: Install dependencies
+      if: steps.cache-primes.outputs.cache-hit != 'true'
+      run: npm install
+
+    #- name: Run ESLint
+    #  run: npm run lint
+
+    #- name: Check Code Formatting
+    #  run: npx prettier --check .
+
+    #- name: Run Tests with Coverage
+    #  run: npm test -- --coverage && npx check-coverage --lines 90 --functions 90 --branches 90
+
+    #- name: Check for Vulnerable Dependencies
+    #  run: npm audit --production
+
+    #- name: Initialize CodeQL
+    #  uses: github/codeql-action/init@v2
+
+    #- name: Run Nodejsscan
+    #  run: |
+    #    pip install nodejsscan
+    #    nodejsscan -f 
+
+
+    #- name: Build (if required)
+    #  run: npm run build
+
+    #- name: Run GitHub CodeQL
+    #  uses: github/codeql-action/analyze@v2
+
+    - name: Deploy with PM2
+      run: |
+        pm2 stop all
+        npm run pm2-start
+  
+        
+  
+
