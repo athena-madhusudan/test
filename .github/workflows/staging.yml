@@ -3,9 +3,9 @@ name: Node.js CI/CD
 on:
   push:
     branches:
-      #- main
+      - main
       #- develop
-      - test-ci
+      # - test-ci
 
 jobs:
   build-and-deploy:
